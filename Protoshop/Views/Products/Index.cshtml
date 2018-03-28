@@ -4,25 +4,26 @@
     ViewBag.Title = "Produkter";
 }
 
-<h2>Produkter</h2>
-
 @if (Request.IsAuthenticated && User.IsInRole("Admin"))
 {
     <p>
         @Html.ActionLink("Create New", "Create")
+        @Html.ActionLink("Delete", "Delete")
     </p>
 }
+
 @using (Html.BeginForm("Index", "Products", FormMethod.Get))
 {
-    <input type="text" id="search" name="search" placeholder="Sök..." />
-    <input type="submit" value="sök" class="hidden" />
+    <i class="glyphicon glyphicon-search gb"></i>
+        <input type="text" class="form-control searchbar" id="search" name="search" placeholder="Sök..." />
+        <input type="submit" value="sök" class="hidden" />
 }
 <div class="products">
     @foreach (var item in Model)
     {
         
         <a href="@Url.Action("Details", "Products", new { id = item.ID })" class="product">
-            <img src="@Url.Content("~/Content/Images/tshirt.jpg")" alt="T-Shirt" class="image-responsive" />
+            <img src="@Url.Content("~/Content/Images/ + item.ImageFile")" alt="bild" class="image-responsive" />
             <h2>@item.Name</h2>
             <p>
                 <span class="price">@item.Price kr</span>
@@ -32,7 +33,6 @@
                 </span> 
             </p>
             <p class="desc">@item.Description</p>
-            <p><span class="btn btn-success">Köp</span></p>
         </a>
         }
 </div>
