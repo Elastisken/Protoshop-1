@@ -1,5 +1,4 @@
 ﻿body {
-
     padding-top: 50px;
     padding-bottom: 20px;
 }
@@ -32,6 +31,14 @@ textarea {
 
 .product {
     grid-column: span 1;
+    border: 1px solid #eeeeee;
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+.product:first-child {
+    grid-column: span 2;
     border: 1px solid #eeeeee;
     padding: 10px;
     color: black;

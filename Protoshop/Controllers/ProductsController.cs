@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Protoshop.Models;
+using System.Web.Helpers;
 
 namespace Protoshop.Controllers
 {
@@ -15,9 +16,13 @@ namespace Protoshop.Controllers
         private StoreContext db = new StoreContext();
 
         // GET: Products
-        public ActionResult Index()
+        public ActionResult Index(string search)
         {
             var products = db.Products.Include(p => p.Category);
+            if (!String.IsNullOrEmpty(search))
+            {
+                products = products.Where(p => p.Name.Contains(search));
+            }
             return View(products.ToList());
         }
 
@@ -37,8 +42,17 @@ namespace Protoshop.Controllers
         }
 
         // GET: Products/Create
-        public ActionResult Create()
+        public ActionResult Create([Bind(Include = "ID,Name,Description,Price,ImageFile,CategoryID")] Product product, HttpPostedFileBase file)
         {
+            if (ModelState.IsValid)
+            {
+                WebImage webImage = new WebImage(file.InputStream);
+                webImage.Save("~/Content/Images/" + file.FileName);
+                product.ImageFile = file.FileName;
+                db.Products.Add(product);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
             ViewBag.CategoryID = new SelectList(db.Categories, "ID", "Name");
             return View();
         }
