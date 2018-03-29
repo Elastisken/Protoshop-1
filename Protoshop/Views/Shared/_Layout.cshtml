@@ -24,6 +24,10 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Produkter", "Index", "Products")</li>
                     <li>@Html.ActionLink("Kategorier", "Index", "Categories")</li>
+                    @if (Request.IsAuthenticated && User.IsInRole("Customer"))
+                    {
+                        <li>@Html.ActionLink("Gå till kassa", "Index", "Products")</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>

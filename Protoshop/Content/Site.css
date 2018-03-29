@@ -60,7 +60,6 @@ textarea {
 
 .searchbar {
     display: inline;
-    margin: 10px;
     grid-column: span 4;
 }
 

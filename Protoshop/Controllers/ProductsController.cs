@@ -16,6 +16,7 @@ namespace Protoshop.Controllers
         private StoreContext db = new StoreContext();
 
         // GET: Products
+        [AllowAnonymous]
         public ActionResult Index(string search)
         {
             var products = db.Products.Include(p => p.Category);
@@ -26,6 +27,7 @@ namespace Protoshop.Controllers
             return View(products.ToList());
         }
 
+        [Authorize]
         // GET: Products/Details/5
         public ActionResult Details(int? id)
         {
@@ -41,20 +43,12 @@ namespace Protoshop.Controllers
             return View(product);
         }
 
+        [Authorize]
         // GET: Products/Create
-        public ActionResult Create([Bind(Include = "ID,Name,Description,Price,ImageFile,CategoryID")] Product product, HttpPostedFileBase file)
+        public ActionResult Create()
         {
-            if (ModelState.IsValid)
-            {
-                WebImage webImage = new WebImage(file.InputStream);
-                webImage.Save("~/Content/Images/" + file.FileName);
-                product.ImageFile = file.FileName;
-                db.Products.Add(product);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.CategoryID = new SelectList(db.Categories, "ID", "Name");
-            return View();
+                ViewBag.CategoryID = new SelectList(db.Categories, "ID", "Name");
+                return View();
         }
 
         // POST: Products/Create
@@ -62,10 +56,13 @@ namespace Protoshop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Description,Price,ImageFile,CategoryID")] Product product)
+        public ActionResult Create([Bind(Include = "ID,Name,Description,Price,ImageFile,CategoryID")] Product product, HttpPostedFileBase file)
         {
             if (ModelState.IsValid)
             {
+                WebImage webImage = new WebImage(file.InputStream);
+                webImage.Save("~/Content/Images/" + file.FileName);
+                product.ImageFile = file.FileName;
                 db.Products.Add(product);
                 db.SaveChanges();
                 return RedirectToAction("Index");
